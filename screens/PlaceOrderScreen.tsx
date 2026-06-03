@@ -9,6 +9,7 @@ import {
   SafeAreaView,
   ScrollView,
   Alert,
+  StatusBar,
 } from "react-native";
 
 export default function PlaceOrderScreen() {
@@ -54,7 +55,7 @@ export default function PlaceOrderScreen() {
       await api.post("/orders", orderData);
 
       Alert.alert(
-        "Order Submitted Successfully",
+        "Order Submitted Successfully 🎉",
         `Tracking ID:\n${newOrderId}`
       );
 
@@ -70,18 +71,30 @@ export default function PlaceOrderScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scroll}>
-        <View style={styles.card}>
-          <Text style={styles.truck}>🚚</Text>
+      <StatusBar barStyle="light-content" />
 
-          <Text style={styles.title}>Place New Order</Text>
-          <Text style={styles.subtitle}>
-            Fill in the order details below
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Header */}
+        <View style={styles.hero}>
+          <Text style={styles.heroIcon}>🚚</Text>
+
+          <Text style={styles.heroTitle}>
+            Place Order
           </Text>
 
+          <Text style={styles.heroSubtitle}>
+            Fast, Secure & Reliable Delivery Service
+          </Text>
+        </View>
+
+        {/* Form Card */}
+        <View style={styles.card}>
           {orderId ? (
             <View style={styles.idContainer}>
-              <Text style={styles.idLabel}>Tracking ID</Text>
+              <Text style={styles.idLabel}>TRACKING ID</Text>
               <Text style={styles.idText}>{orderId}</Text>
             </View>
           ) : null}
@@ -90,6 +103,7 @@ export default function PlaceOrderScreen() {
           <TextInput
             style={styles.input}
             placeholder="Enter customer name"
+            placeholderTextColor="#94A3B8"
             value={name}
             onChangeText={setName}
           />
@@ -98,6 +112,7 @@ export default function PlaceOrderScreen() {
           <TextInput
             style={styles.input}
             placeholder="Enter phone number"
+            placeholderTextColor="#94A3B8"
             keyboardType="phone-pad"
             value={phone}
             onChangeText={setPhone}
@@ -107,6 +122,7 @@ export default function PlaceOrderScreen() {
           <TextInput
             style={styles.input}
             placeholder="Enter item name"
+            placeholderTextColor="#94A3B8"
             value={item}
             onChangeText={setItem}
           />
@@ -115,6 +131,7 @@ export default function PlaceOrderScreen() {
           <TextInput
             style={[styles.input, styles.addressInput]}
             placeholder="Enter delivery address"
+            placeholderTextColor="#94A3B8"
             multiline
             value={address}
             onChangeText={setAddress}
@@ -122,9 +139,12 @@ export default function PlaceOrderScreen() {
 
           <TouchableOpacity
             style={styles.button}
+            activeOpacity={0.9}
             onPress={submitOrder}
           >
-            <Text style={styles.buttonText}>Submit Order</Text>
+            <Text style={styles.buttonText}>
+              🚀 Place Order
+            </Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -132,84 +152,98 @@ export default function PlaceOrderScreen() {
   );
 }
 
+const PRIMARY = "#2563EB";
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#EEF2F7",
+    backgroundColor: "#F8FAFC",
   },
 
   scroll: {
     flexGrow: 1,
-    justifyContent: "center",
     padding: 20,
   },
 
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 25,
-    padding: 25,
-    elevation: 8,
+  hero: {
+    alignItems: "center",
+    marginTop: 20,
+    marginBottom: 25,
   },
 
-  truck: {
-    fontSize: 55,
-    textAlign: "center",
-    marginBottom: 10,
+  heroIcon: {
+    fontSize: 75,
   },
 
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    textAlign: "center",
+  heroTitle: {
+    fontSize: 34,
+    fontWeight: "800",
     color: "#0F172A",
+    marginTop: 10,
   },
 
-  subtitle: {
-    textAlign: "center",
+  heroSubtitle: {
+    fontSize: 15,
     color: "#64748B",
     marginTop: 6,
-    marginBottom: 20,
-    fontSize: 15,
+    textAlign: "center",
+  },
+
+  card: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 30,
+    padding: 25,
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+
+    elevation: 8,
   },
 
   idContainer: {
     backgroundColor: "#EFF6FF",
-    borderWidth: 1,
-    borderColor: "#BFDBFE",
-    borderRadius: 12,
-    padding: 12,
+    borderLeftWidth: 5,
+    borderLeftColor: PRIMARY,
+    borderRadius: 16,
+    padding: 15,
     marginBottom: 20,
-    alignItems: "center",
   },
 
   idLabel: {
-    fontSize: 14,
     color: "#64748B",
+    fontSize: 13,
+    fontWeight: "600",
   },
 
   idText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#2563EB",
-    marginTop: 4,
+    fontSize: 20,
+    fontWeight: "800",
+    color: PRIMARY,
+    marginTop: 5,
   },
 
   label: {
-    fontSize: 16,
-    fontWeight: "600",
+    fontSize: 15,
+    fontWeight: "700",
     color: "#334155",
     marginBottom: 8,
-    marginTop: 10,
+    marginTop: 12,
   },
 
   input: {
+    height: 58,
+    backgroundColor: "#F8FAFC",
     borderWidth: 1,
     borderColor: "#E2E8F0",
-    backgroundColor: "#F8FAFC",
-    borderRadius: 14,
-    paddingHorizontal: 15,
-    height: 55,
+    borderRadius: 16,
+    paddingHorizontal: 18,
     fontSize: 16,
+    color: "#0F172A",
     marginBottom: 10,
   },
 
@@ -220,16 +254,27 @@ const styles = StyleSheet.create({
   },
 
   button: {
-    backgroundColor: "#2563EB",
-    paddingVertical: 16,
-    borderRadius: 14,
-    marginTop: 25,
+    backgroundColor: PRIMARY,
+    height: 58,
+    borderRadius: 18,
+    justifyContent: "center",
     alignItems: "center",
+    marginTop: 20,
+
+    shadowColor: PRIMARY,
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+
+    elevation: 8,
   },
 
   buttonText: {
-    color: "#fff",
+    color: "#FFFFFF",
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: "700",
   },
 });

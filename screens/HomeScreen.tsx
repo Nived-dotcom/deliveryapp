@@ -5,111 +5,198 @@ import {
   Text,
   StyleSheet,
   SafeAreaView,
+  StatusBar,
+  ScrollView,
 } from "react-native";
 
-export default function HomeScreen({ navigation }: any) {
+export default function HomeScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.logo}>🚚</Text>
+      <StatusBar barStyle="light-content" />
 
-        <Text style={styles.title}>
-          Fast Delivery
-        </Text>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Hero Section */}
+        <View style={styles.hero}>
+          <Text style={styles.logo}>🚚</Text>
 
-        <Text style={styles.subtitle}>
-          Delivering Happiness To Your Doorstep
-        </Text>
-      </View>
+          <Text style={styles.title}>
+            Fast Delivery
+          </Text>
 
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() => navigation.navigate("PlaceOrder")}
-      >
-        <Text style={styles.cardIcon}>📦</Text>
-        <Text style={styles.cardTitle}>Place Order</Text>
-        <Text style={styles.cardDesc}>
-          Create a new delivery order
-        </Text>
-      </TouchableOpacity>
+          <Text style={styles.subtitle}>
+            Fast, Secure & Reliable Delivery Service
+          </Text>
+        </View>
 
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() => navigation.navigate("Status")}
-      >
-        <Text style={styles.cardIcon}>📍</Text>
-        <Text style={styles.cardTitle}>Track Order</Text>
-        <Text style={styles.cardDesc}>
-          Check delivery status
-        </Text>
-      </TouchableOpacity>
+        {/* Cards */}
+        <TouchableOpacity
+          style={styles.card}
+          activeOpacity={0.9}
+          onPress={() => navigation.navigate("PlaceOrder")}
+        >
+          <View style={styles.iconBox}>
+            <Text style={styles.icon}>📦</Text>
+          </View>
 
-      <TouchableOpacity
-        style={styles.card}
-        onPress={() => navigation.navigate("DeliveryLogin")}
-      >
-        <Text style={styles.cardIcon}>🔐</Text>
-        <Text style={styles.cardTitle}>Delivery Login</Text>
-        <Text style={styles.cardDesc}>
-          Access delivery dashboard
-        </Text>
-      </TouchableOpacity>
+          <View style={styles.content}>
+            <Text style={styles.cardTitle}>Place Order</Text>
+            <Text style={styles.cardDesc}>
+              Create and schedule a new delivery
+            </Text>
+          </View>
+
+          <Text style={styles.arrow}>›</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.card}
+          activeOpacity={0.9}
+          onPress={() => navigation.navigate("Status")}
+        >
+          <View style={styles.iconBox}>
+            <Text style={styles.icon}>📍</Text>
+          </View>
+
+          <View style={styles.content}>
+            <Text style={styles.cardTitle}>Track Order</Text>
+            <Text style={styles.cardDesc}>
+              Check delivery progress in real-time
+            </Text>
+          </View>
+
+          <Text style={styles.arrow}>›</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.card}
+          activeOpacity={0.9}
+          onPress={() => navigation.navigate("DeliveryLogin")}
+        >
+          <View style={styles.iconBox}>
+            <Text style={styles.icon}>🔐</Text>
+          </View>
+
+          <View style={styles.content}>
+            <Text style={styles.cardTitle}>Delivery Login</Text>
+            <Text style={styles.cardDesc}>
+              Access driver dashboard securely
+            </Text>
+          </View>
+
+          <Text style={styles.arrow}>›</Text>
+        </TouchableOpacity>
+
+        {/* Footer */}
+        <View style={styles.footer}>
+          <Text style={styles.footerText}>
+            Trusted by thousands of customers
+          </Text>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
 
+const PRIMARY = "#2563EB";
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#EEF4FF",
-    padding: 20,
+    backgroundColor: "#F8FAFC",
   },
 
-  header: {
+  hero: {
+    backgroundColor: PRIMARY,
+    paddingTop: 40,
+    paddingBottom: 50,
+    borderBottomLeftRadius: 35,
+    borderBottomRightRadius: 35,
     alignItems: "center",
-    marginTop: 30,
-    marginBottom: 40,
   },
 
   logo: {
-    fontSize: 80,
+    fontSize: 70,
   },
 
   title: {
+    color: "#fff",
     fontSize: 34,
     fontWeight: "800",
-    color: "#0F172A",
     marginTop: 10,
   },
 
   subtitle: {
+    color: "#E2E8F0",
     fontSize: 15,
-    color: "#64748B",
-    marginTop: 5,
+    marginTop: 8,
     textAlign: "center",
+    paddingHorizontal: 20,
   },
 
   card: {
-    backgroundColor: "#FFFFFF",
-    padding: 25,
-    borderRadius: 25,
-    marginBottom: 18,
-    elevation: 8,
+    backgroundColor: "#fff",
+    marginHorizontal: 20,
+    marginTop: 20,
+    borderRadius: 20,
+    padding: 18,
+    flexDirection: "row",
+    alignItems: "center",
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+
+    elevation: 5,
   },
 
-  cardIcon: {
-    fontSize: 40,
-    marginBottom: 10,
+  iconBox: {
+    width: 60,
+    height: 60,
+    borderRadius: 15,
+    backgroundColor: "#EFF6FF",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  icon: {
+    fontSize: 30,
+  },
+
+  content: {
+    flex: 1,
+    marginLeft: 15,
   },
 
   cardTitle: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: "700",
     color: "#0F172A",
   },
 
   cardDesc: {
+    fontSize: 13,
     color: "#64748B",
-    marginTop: 5,
+    marginTop: 4,
+  },
+
+  arrow: {
+    fontSize: 32,
+    color: PRIMARY,
+    fontWeight: "bold",
+  },
+
+  footer: {
+    alignItems: "center",
+    marginTop: 40,
+    marginBottom: 30,
+  },
+
+  footerText: {
+    color: "#94A3B8",
+    fontSize: 14,
   },
 });

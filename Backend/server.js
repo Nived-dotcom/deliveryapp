@@ -15,13 +15,8 @@ app.use("/api", orderRoutes);
 
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("✅ MongoDB Connected");
-  })
-  .catch((err) => {
-    console.log("❌ MongoDB Connection Failed");
-    console.log(err.message);
-  });
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch((err) => console.log(err));
 
 const PORT = process.env.PORT || 4000;
 

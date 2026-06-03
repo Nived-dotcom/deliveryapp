@@ -1,138 +1,215 @@
 import React, { useState } from "react";
 import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    StyleSheet,
-    Alert,
-    SafeAreaView,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  SafeAreaView,
+  StatusBar,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 
 export default function DeliveryLoginScreen({ navigation }: any) {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-    const handleLogin = () => {
-        if (!email.trim()) {
-            Alert.alert("Error", "Please enter email");
-            return;
-        }
+  const handleLogin = () => {
+    if (!email.trim()) {
+      Alert.alert("Error", "Please enter email");
+      return;
+    }
 
-        if (!password.trim()) {
-            Alert.alert("Error", "Please enter password");
-            return;
-        }
+    if (!password.trim()) {
+      Alert.alert("Error", "Please enter password");
+      return;
+    }
 
-        // Demo Login
-        navigation.replace("DeliveryOrders");
-    };
+    navigation.replace("DeliveryOrders");
+  };
 
-    return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.card}>
-                <Text style={styles.icon}>🚚</Text>
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="light-content" />
 
-                <Text style={styles.title}>Delivery Login</Text>
+      <KeyboardAvoidingView
+        style={styles.wrapper}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        {/* Header */}
 
-                <Text style={styles.subtitle}>
-                    Login to manage delivery orders
-                </Text>
+        <View style={styles.header}>
+          <Text style={styles.icon}>🚚</Text>
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="Email Address"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    value={email}
-                    onChangeText={setEmail}
-                />
+          <Text style={styles.heading}>
+            Fast Delivery
+          </Text>
 
-                <TextInput
-                    style={styles.input}
-                    placeholder="Password"
-                    secureTextEntry
-                    value={password}
-                    onChangeText={setPassword}
-                />
+          <Text style={styles.subHeading}>
+            Driver & Delivery Partner Login
+          </Text>
+        </View>
 
-                <TouchableOpacity
-                    style={styles.button}
-                    onPress={handleLogin}
-                >
-                    <Text style={styles.buttonText}>
-                        Login
-                    </Text>
-                </TouchableOpacity>
+        {/* Login Card */}
 
-                <Text style={styles.demoText}>
-                    Demo: Enter any email and password
-                </Text>
-            </View>
-        </SafeAreaView>
-    );
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>
+            Welcome Back 👋
+          </Text>
+
+          <Text style={styles.cardSubtitle}>
+            Login to manage and track deliveries
+          </Text>
+
+          <Text style={styles.label}>
+            Email Address
+          </Text>
+
+          <TextInput
+            style={styles.input}
+            placeholder="driver@email.com"
+            placeholderTextColor="#94A3B8"
+            keyboardType="email-address"
+            autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
+          />
+
+          <Text style={styles.label}>
+            Password
+          </Text>
+
+          <TextInput
+            style={styles.input}
+            placeholder="••••••••"
+            placeholderTextColor="#94A3B8"
+            secureTextEntry
+            value={password}
+            onChangeText={setPassword}
+          />
+
+          <TouchableOpacity
+            style={styles.loginButton}
+            activeOpacity={0.9}
+            onPress={handleLogin}
+          >
+            <Text style={styles.loginButtonText}>
+              Login
+            </Text>
+          </TouchableOpacity>
+
+          <Text style={styles.demoText}>
+            Demo Login: Enter any email and password
+          </Text>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
+  );
 }
 
+const PRIMARY = "#2563EB";
+
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        padding: 20,
-        backgroundColor: "#EEF4FF",
-    },
+  container: {
+    flex: 1,
+    backgroundColor: PRIMARY,
+  },
 
-    card: {
-        backgroundColor: "#fff",
-        padding: 25,
-        borderRadius: 20,
-        elevation: 8,
-    },
+  wrapper: {
+    flex: 1,
+    justifyContent: "center",
+    padding: 24,
+  },
 
-    icon: {
-        fontSize: 60,
-        textAlign: "center",
-        marginBottom: 10,
-    },
+  header: {
+    alignItems: "center",
+    marginBottom: 30,
+  },
 
-    title: {
-        fontSize: 30,
-        fontWeight: "bold",
-        textAlign: "center",
-        marginBottom: 10,
-    },
+  icon: {
+    fontSize: 80,
+  },
 
-    subtitle: {
-        textAlign: "center",
-        color: "#64748B",
-        marginBottom: 25,
-    },
+  heading: {
+    color: "#FFFFFF",
+    fontSize: 34,
+    fontWeight: "800",
+    marginTop: 10,
+  },
 
-    input: {
-        borderWidth: 1,
-        borderColor: "#CBD5E1",
-        borderRadius: 12,
-        padding: 15,
-        marginBottom: 15,
-        backgroundColor: "#fff",
-    },
+  subHeading: {
+    color: "#DBEAFE",
+    fontSize: 15,
+    marginTop: 5,
+  },
 
-    button: {
-        backgroundColor: "#2563EB",
-        padding: 15,
-        borderRadius: 12,
-        marginTop: 10,
-    },
+  card: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 28,
+    padding: 25,
 
-    buttonText: {
-        color: "#fff",
-        textAlign: "center",
-        fontSize: 18,
-        fontWeight: "bold",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 10,
     },
+    shadowOpacity: 0.12,
+    shadowRadius: 15,
 
-    demoText: {
-        textAlign: "center",
-        marginTop: 15,
-        color: "#64748B",
-    },
+    elevation: 8,
+  },
+
+  cardTitle: {
+    fontSize: 28,
+    fontWeight: "800",
+    color: "#0F172A",
+  },
+
+  cardSubtitle: {
+    color: "#64748B",
+    marginTop: 5,
+    marginBottom: 25,
+  },
+
+  label: {
+    color: "#334155",
+    fontWeight: "600",
+    marginBottom: 8,
+    marginTop: 10,
+  },
+
+  input: {
+    height: 58,
+    borderWidth: 1,
+    borderColor: "#E2E8F0",
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    backgroundColor: "#F8FAFC",
+    fontSize: 16,
+    marginBottom: 12,
+  },
+
+  loginButton: {
+    backgroundColor: PRIMARY,
+    height: 58,
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 15,
+  },
+
+  loginButtonText: {
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "700",
+  },
+
+  demoText: {
+    textAlign: "center",
+    marginTop: 18,
+    color: "#64748B",
+    fontSize: 13,
+  },
 });

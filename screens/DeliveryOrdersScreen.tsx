@@ -1,107 +1,326 @@
 import React, { useEffect, useState } from "react";
 import {
-    View,
-    Text,
-    FlatList,
-    TouchableOpacity,
-    StyleSheet,
-    Alert,
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+  SafeAreaView,
+  StatusBar,
 } from "react-native";
+
 import api from "./services/api";
 
 export default function DeliveryOrdersScreen() {
-    const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
 
-    const loadOrders = async () => {
-        try {
-            const res = await api.get("/orders");
+  const loadOrders = async () => {
+    try {
+      const res = await api.get("/orders/all");
+      setOrders(res.data);
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Error", "Failed to load orders");
+    }
+  };
 
-            console.log("ORDERS:", res.data);
+  const updateStatus = async (
+    id: string,
+    status: string
+  ) => {
+    try {
+      await api.put(`/orders/${id}/status`, {
+        status,
+      });
 
-            setOrders(res.data);
-        } catch (error) {
-            console.log("LOAD ERROR:", error);
-            Alert.alert("Error", "Failed to load orders");
-        }
-    };
+      Alert.alert(
+        "Success",
+        `Order marked as ${status}`
+      );
 
-    const acceptOrder = async (id: string) => {
-        try {
-            await api.put(`/orders/${id}`, {
-                status: "Accepted",
-            });
+      loadOrders();
+    } catch (error) {
+      Alert.alert(
+        "Error",
+        "Failed to update status"
+      );
+    }
+  };
 
-            Alert.alert("Success", "Order Accepted");
-            loadOrders();
-        } catch (error) {
-            console.log(error);
-            Alert.alert("Error", "Failed to update order");
-        }
-    };
+  useEffect(() => {
+    loadOrders();
+  }, []);
 
-    useEffect(() => {
-        loadOrders();
-    }, []);
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case "Pending":
+        return "#F59E0B";
 
-    return (
-        <View style={styles.container}>
-            <FlatList
-                data={orders}
-                keyExtractor={(item: any) => item._id}
-                ListEmptyComponent={
-                    <Text style={styles.emptyText}>No Orders Found</Text>
-                }
-                renderItem={({ item }: any) => (
-                    <View style={styles.card}>
-                        <Text style={styles.label}>Name: {item.name}</Text>
-                        <Text style={styles.label}>Phone: {item.phone}</Text>
-                        <Text style={styles.label}>Address: {item.address}</Text>
-                        <Text style={styles.label}>Item: {item.item}</Text>
-                        <Text style={styles.label}>Status: {item.status}</Text>
+      case "Accepted":
+        return "#2563EB";
 
-                        <TouchableOpacity
-                            style={styles.button}
-                            onPress={() => acceptOrder(item._id)}
-                        >
-                            <Text style={styles.buttonText}>Accept Order</Text>
-                        </TouchableOpacity>
-                    </View>
-                )}
-            />
+      case "Out For Delivery":
+        return "#8B5CF6";
+
+      case "Delivered":
+        return "#10B981";
+
+      default:
+        return "#64748B";
+    }
+  };
+
+  const renderItem = ({ item }: any) => (
+    <View style={styles.card}>
+      <View style={styles.cardHeader}>
+        <Text style={styles.orderId}>
+          {item.orderId}
+        </Text>
+
+        <View
+          style={[
+            styles.statusBadge,
+            {
+              backgroundColor:
+                getStatusColor(item.status),
+            },
+          ]}
+        >
+          <Text style={styles.statusText}>
+            {item.status}
+          </Text>
         </View>
-    );
+      </View>
+
+      <Text style={styles.customer}>
+        👤 {item.customerName}
+      </Text>
+
+      <Text style={styles.info}>
+        📞 {item.phone}
+      </Text>
+
+      <Text style={styles.info}>
+        📦 {item.item}
+      </Text>
+
+      <Text style={styles.info}>
+        📍 {item.address}
+      </Text>
+
+      <View style={styles.buttonRow}>
+        <TouchableOpacity
+          style={styles.acceptBtn}
+          onPress={() =>
+            updateStatus(
+              item._id,
+              "Accepted"
+            )
+          }
+        >
+          <Text style={styles.buttonText}>
+            Accept
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.outBtn}
+          onPress={() =>
+            updateStatus(
+              item._id,
+              "Out For Delivery"
+            )
+          }
+        >
+          <Text style={styles.buttonText}>
+            Out
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.deliveredBtn}
+          onPress={() =>
+            updateStatus(
+              item._id,
+              "Delivered"
+            )
+          }
+        >
+          <Text style={styles.buttonText}>
+            Done
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" />
+
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>
+          🚚 Delivery Dashboard
+        </Text>
+
+        <Text style={styles.headerSubtitle}>
+          Manage delivery orders
+        </Text>
+      </View>
+
+      <FlatList
+        data={orders}
+        keyExtractor={(item) => item._id}
+        renderItem={renderItem}
+        contentContainerStyle={{
+          padding: 16,
+        }}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <Text style={styles.emptyIcon}>
+              📦
+            </Text>
+
+            <Text style={styles.emptyText}>
+              No Orders Found
+            </Text>
+          </View>
+        }
+      />
+    </SafeAreaView>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 15,
+  container: {
+    flex: 1,
+    backgroundColor: "#F8FAFC",
+  },
+
+  header: {
+    backgroundColor: "#2563EB",
+    paddingTop: 20,
+    paddingBottom: 25,
+    paddingHorizontal: 20,
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
+  },
+
+  headerTitle: {
+    color: "#FFFFFF",
+    fontSize: 28,
+    fontWeight: "800",
+  },
+
+  headerSubtitle: {
+    color: "#DBEAFE",
+    marginTop: 5,
+  },
+
+  card: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 20,
+    padding: 18,
+    marginBottom: 15,
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
     },
-    emptyText: {
-        textAlign: "center",
-        marginTop: 50,
-        fontSize: 18,
-    },
-    card: {
-        borderWidth: 1,
-        borderColor: "#ddd",
-        padding: 15,
-        marginBottom: 10,
-        borderRadius: 8,
-    },
-    label: {
-        fontSize: 16,
-        marginBottom: 5,
-    },
-    button: {
-        backgroundColor: "green",
-        padding: 10,
-        marginTop: 10,
-        borderRadius: 6,
-    },
-    buttonText: {
-        color: "#fff",
-        textAlign: "center",
-        fontWeight: "bold",
-    },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
+
+    elevation: 5,
+  },
+
+  cardHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 15,
+  },
+
+  orderId: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#0F172A",
+  },
+
+  statusBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+
+  statusText: {
+    color: "#FFFFFF",
+    fontWeight: "700",
+    fontSize: 12,
+  },
+
+  customer: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#0F172A",
+    marginBottom: 10,
+  },
+
+  info: {
+    color: "#475569",
+    marginBottom: 6,
+    fontSize: 14,
+  },
+
+  buttonRow: {
+    flexDirection: "row",
+    marginTop: 15,
+  },
+
+  acceptBtn: {
+    flex: 1,
+    backgroundColor: "#2563EB",
+    paddingVertical: 12,
+    borderRadius: 12,
+    marginRight: 5,
+  },
+
+  outBtn: {
+    flex: 1,
+    backgroundColor: "#F59E0B",
+    paddingVertical: 12,
+    borderRadius: 12,
+    marginHorizontal: 5,
+  },
+
+  deliveredBtn: {
+    flex: 1,
+    backgroundColor: "#10B981",
+    paddingVertical: 12,
+    borderRadius: 12,
+    marginLeft: 5,
+  },
+
+  buttonText: {
+    color: "#FFFFFF",
+    textAlign: "center",
+    fontWeight: "700",
+    fontSize: 13,
+  },
+
+  emptyContainer: {
+    alignItems: "center",
+    marginTop: 80,
+  },
+
+  emptyIcon: {
+    fontSize: 60,
+  },
+
+  emptyText: {
+    marginTop: 10,
+    fontSize: 18,
+    color: "#64748B",
+  },
 });

@@ -1,4 +1,9 @@
 {
   "name": "FrontendCustomer",
-  "displayName": "FrontendCustomer"
+  "displayName": "FrontendCustomer",
+  "extra": {
+    "eas": {
+      "projectId": "1b1ea133-1de7-4185-88d9-42fa36873fc4"
+    }
+  }
 }
